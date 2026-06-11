@@ -1,0 +1,635 @@
+Question 1
+
+MariaDB [elitevideo]> create table membership( mem_num int not null auto_increment, mem_fname varchar(250) not null, mem_lname varchar(250) not null, mem_street varchar(250) not null, mem_city varchar(250) not null, mem_state varchar(250) not null, mem_zip int, mem_balance int, primary key (mem_num)) auto_increment = 102;
+Query OK, 0 rows affected (0.036 sec)
+
+MariaDB [elitevideo]> describe membership;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| mem_num     | int(11)      | NO   | PRI | NULL    | auto_increment |
+| mem_fname   | varchar(250) | NO   |     | NULL    |                |
+| mem_lname   | varchar(250) | NO   |     | NULL    |                |
+| mem_street  | varchar(250) | NO   |     | NULL    |                |
+| mem_city    | varchar(250) | NO   |     | NULL    |                |
+| mem_state   | varchar(250) | NO   |     | NULL    |                |
+| mem_zip     | int(11)      | YES  |     | NULL    |                |
+| mem_balance | int(11)      | YES  |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+8 rows in set (0.057 sec)
+
+MariaDB [elitevideo]> create table rental(rent_num int not null auto_increment, rent_date varchar(250) not null, mem_num int, primary key(rent_num), foreign key(mem_num) references membership(mem_num)) auto_increment = 1001;
+Query OK, 0 rows affected (0.035 sec)
+
+MariaDB [elitevideo]> describe rental;
++-----------+--------------+------+-----+---------+----------------+
+| Field     | Type         | Null | Key | Default | Extra          |
++-----------+--------------+------+-----+---------+----------------+
+| rent_num  | int(11)      | NO   | PRI | NULL    | auto_increment |
+| rent_date | varchar(250) | NO   |     | NULL    |                |
+| mem_num   | int(11)      | YES  | MUL | NULL    |                |
++-----------+--------------+------+-----+---------+----------------+
+3 rows in set (0.048 sec)
+
+MariaDB [elitevideo]> create table price(price_code int not null auto_increment, price_description varchar(250), price_rentfee decimal(2,1) not null, price_dailylatefee decimal (2,1), primary key(price_code))auto_increment = 1;
+Query OK, 0 rows affected (0.048 sec)
+
+MariaDB [elitevideo]> describe price;
++--------------------+--------------+------+-----+---------+----------------+
+| Field              | Type         | Null | Key | Default | Extra          |
++--------------------+--------------+------+-----+---------+----------------+
+| price_code         | int(11)      | NO   | PRI | NULL    | auto_increment |
+| price_description  | varchar(250) | YES  |     | NULL    |                |
+| price_rentfee      | decimal(2,1) | NO   |     | NULL    |                |
+| price_dailylatefee | decimal(2,1) | YES  |     | NULL    |                |
++--------------------+--------------+------+-----+---------+----------------+
+4 rows in set (0.049 sec)
+
+MariaDB [elitevideo]> create table movie( movie_num int not null, movie_title varchar(250) not null, movie_year int, movie_cost decimal (5,2) not null, movie_genre varchar(250), price_code int, primary key(movie_num), foreign key (price_code) references price(price_code));
+Query OK, 0 rows affected (0.013 sec)
+
+MariaDB [elitevideo]> describe movie;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| movie_num   | int(11)      | NO   | PRI | NULL    |       |
+| movie_title | varchar(250) | NO   |     | NULL    |       |
+| movie_year  | int(11)      | YES  |     | NULL    |       |
+| movie_cost  | decimal(5,2) | NO   |     | NULL    |       |
+| movie_genre | varchar(250) | YES  |     | NULL    |       |
+| price_code  | int(11)      | YES  | MUL | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+6 rows in set (0.055 sec)
+
+
+MariaDB [elitevideo]> create table video(vid_num int not null, vid_indate varchar(250), movie_num int, primary key(vid_num), foreign key(movie_num) references movie(movie_num));
+Query OK, 0 rows affected (0.033 sec)
+
+MariaDB [elitevideo]> describe video;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| vid_num    | int(11)      | NO   | PRI | NULL    |       |
+| vid_indate | varchar(250) | YES  |     | NULL    |       |
+| movie_num  | int(11)      | YES  | MUL | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+3 rows in set (0.055 sec)
+
+MariaDB [elitevideo]> create table detailrental(rent_num int, vid_num int, detail_fee decimal(2,1) not null, detail_duedate varchar(250) not null, detail_returndate varchar(250), detail_dailylatefee int, primary key(rent_num, vid_num), foreign key(rent_num) references rental(rent_num), foreign key(vid_num) references video(vid_num));
+Query OK, 0 rows affected (0.036 sec)
+
+MariaDB [elitevideo]> describe detailrental;
++---------------------+--------------+------+-----+---------+-------+
+| Field               | Type         | Null | Key | Default | Extra |
++---------------------+--------------+------+-----+---------+-------+
+| rent_num            | int(11)      | NO   | PRI | NULL    |       |
+| vid_num             | int(11)      | NO   | PRI | NULL    |       |
+| detail_fee          | decimal(2,1) | NO   |     | NULL    |       |
+| detail_duedate      | varchar(250) | NO   |     | NULL    |       |
+| detail_returndate   | varchar(250) | YES  |     | NULL    |       |
+| detail_dailylatefee | int(11)      | YES  |     | NULL    |       |
++---------------------+--------------+------+-----+---------+-------+
+6 rows in set (0.057 sec)
+
+Question 2
+
+MariaDB [elitevideo]> insert into membership (mem_fname, mem_lname, mem_street, mem_city, mem_state, mem_zip, mem_balance) values('Tami','Dawson','2632 Takli Circle','Norene','TN',37136,11),('Curt','Knight','4025 Cornell Court','Flagtap','KY',41219,6),('Jamal','Melendez','788 East 145th Avenue','Quebeck','TN',38579,0),('Iva','Mcclain','6045 Musket Ball Circle','Summit','KY',42783,15),('Miranda','Parks','4469 Maxwell Place','Germantown','TN',38183,0),('Rosario','Elliott','7578 Danner Avenue','Columbia','TN',38402,5),('Mattie','Guy','4390 Evergreen Street','Lily','KY',40740,0),('Clint','Ochoa','1711 Elm Street','Greeneville','TN',37745,10),('Lewis','Rosales','4524 Southwind Circle','Counce','TN',38326,0),('Stacy','Mann','2789 East Cook Avenue','Murfreesboro','TN',37132,8),('Luis','Trujillo','7267 Melvin Avenue','Heiskell','TN',37754,3),('Minnie','Gonzales','6430 Vasili Drive','Williston','TN',38076,0);
+Query OK, 12 rows affected (0.028 sec)
+Records: 12  Duplicates: 0  Warnings: 0
+
+MariaDB [elitevideo]> select * from membership;
++---------+-----------+-----------+-------------------------+--------------+-----------+---------+-------------+
+| mem_num | mem_fname | mem_lname | mem_street              | mem_city     | mem_state | mem_zip | mem_balance |
++---------+-----------+-----------+-------------------------+--------------+-----------+---------+-------------+
+|     102 | Tami      | Dawson    | 2632 Takli Circle       | Norene       | TN        |   37136 |          11 |
+|     103 | Curt      | Knight    | 4025 Cornell Court      | Flagtap      | KY        |   41219 |           6 |
+|     104 | Jamal     | Melendez  | 788 East 145th Avenue   | Quebeck      | TN        |   38579 |           0 |
+|     105 | Iva       | Mcclain   | 6045 Musket Ball Circle | Summit       | KY        |   42783 |          15 |
+|     106 | Miranda   | Parks     | 4469 Maxwell Place      | Germantown   | TN        |   38183 |           0 |
+|     107 | Rosario   | Elliott   | 7578 Danner Avenue      | Columbia     | TN        |   38402 |           5 |
+|     108 | Mattie    | Guy       | 4390 Evergreen Street   | Lily         | KY        |   40740 |           0 |
+|     109 | Clint     | Ochoa     | 1711 Elm Street         | Greeneville  | TN        |   37745 |          10 |
+|     110 | Lewis     | Rosales   | 4524 Southwind Circle   | Counce       | TN        |   38326 |           0 |
+|     111 | Stacy     | Mann      | 2789 East Cook Avenue   | Murfreesboro | TN        |   37132 |           8 |
+|     112 | Luis      | Trujillo  | 7267 Melvin Avenue      | Heiskell     | TN        |   37754 |           3 |
+|     113 | Minnie    | Gonzales  | 6430 Vasili Drive       | Williston    | TN        |   38076 |           0 |
++---------+-----------+-----------+-------------------------+--------------+-----------+---------+-------------+
+12 rows in set (0.001 sec)
+
+MariaDB [elitevideo]> insert into rental(rent_date,mem_num) values('01-MAR-16',103),('01-MAR-16',105),('02-MAR-16',102),('02-MAR-16',110),('02-MAR-16',111),('02-MAR-16',107),('02-MAR-16',104),('03-MAR-16',105),('03-MAR-16',111);
+Query OK, 9 rows affected (0.028 sec)
+Records: 9  Duplicates: 0  Warnings: 0
+
+MariaDB [elitevideo]> select * from rental;
++----------+-----------+---------+
+| rent_num | rent_date | mem_num |
++----------+-----------+---------+
+|     1001 | 01-MAR-16 |     103 |
+|     1002 | 01-MAR-16 |     105 |
+|     1003 | 02-MAR-16 |     102 |
+|     1004 | 02-MAR-16 |     110 |
+|     1005 | 02-MAR-16 |     111 |
+|     1006 | 02-MAR-16 |     107 |
+|     1007 | 02-MAR-16 |     104 |
+|     1008 | 03-MAR-16 |     105 |
+|     1009 | 03-MAR-16 |     111 |
++----------+-----------+---------+
+9 rows in set (0.001 sec)
+
+MariaDB [elitevideo]> insert into price(price_description,price_rentfee, price_dailylatefee) values('Standard',2,1),('New Release',3.5,3),('Discount',1.5,1),('Weekly Special',1,.5);
+Query OK, 4 rows affected (0.028 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+MariaDB [elitevideo]> select * from price;
++------------+-------------------+---------------+--------------------+
+| price_code | price_description | price_rentfee | price_dailylatefee |
++------------+-------------------+---------------+--------------------+
+|          1 | Standard          |           2.0 |                1.0 |
+|          2 | New Release       |           3.5 |                3.0 |
+|          3 | Discount          |           1.5 |                1.0 |
+|          4 | Weekly Special    |           1.0 |                0.5 |
++------------+-------------------+---------------+--------------------+
+4 rows in set (0.001 sec)
+
+MariaDB [elitevideo]> insert into movie values(1234, 'The Cesar Family Christmas', 2014, 39.95, 'FAMILY', 2),(1235, 'Smokey Mountain Wildlife', 2011, 59.95, 'ACTION', 1),(1236, 'Richard Goodhope', 2015, 59.95, 'DRAMA', 2),(1237, 'Beatnik Fever', 2014, 29.95, 'COMEDY', 2),(1238, 'Constant Companion', 2015, 89.95, 'DRAMA', NULL),(1239, 'Where Hope Dies', 2005, 25.49, 'DRAMA', 3),(1245, 'Time to Burn', 2012, 45.49, 'ACTION', 1),(1246, 'What He Doesn''t Know', 2013, 58.29, 'COMEDY', 1);
+Query OK, 8 rows affected (0.027 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+MariaDB [elitevideo]> select * from movie;
++-----------+----------------------------+------------+------------+-------------+------------+
+| movie_num | movie_title                | movie_year | movie_cost | movie_genre | price_code |
++-----------+----------------------------+------------+------------+-------------+------------+
+|      1234 | The Cesar Family Christmas |       2014 |      39.95 | FAMILY      |          2 |
+|      1235 | Smokey Mountain Wildlife   |       2011 |      59.95 | ACTION      |          1 |
+|      1236 | Richard Goodhope           |       2015 |      59.95 | DRAMA       |          2 |
+|      1237 | Beatnik Fever              |       2014 |      29.95 | COMEDY      |          2 |
+|      1238 | Constant Companion         |       2015 |      89.95 | DRAMA       |       NULL |
+|      1239 | Where Hope Dies            |       2005 |      25.49 | DRAMA       |          3 |
+|      1245 | Time to Burn               |       2012 |      45.49 | ACTION      |          1 |
+|      1246 | What He Doesn't Know       |       2013 |      58.29 | COMEDY      |          1 |
++-----------+----------------------------+------------+------------+-------------+------------+
+8 rows in set (0.001 sec)
+
+
+
+MariaDB [elitevideo]> insert into video values(54321, '18-JUN-15', 1234),(54324, '18-JUN-15', 1234),(54325, '18-JUN-15', 1234),(34341, '22-JAN-14', 1235),(34342, '22-JAN-14', 1235),(34366, '02-MAR-16', 1236),(34367, '02-MAR-16', 1236),(34368, '02-MAR-16', 1236),(34369, '02-MAR-16', 1236),(44392, '21-OCT-15', 1237),(44397, '21-OCT-15', 1237),(59237, '14-FEB-16', 1237), (61388, '25-JAN-14', 1239),(61353, '28-JAN-13', 1245),(61354, '28-JAN-13', 1245),(61367, '30-JUL-15', 1246),(61369, '30-JUL-15', 1246);
+Query OK, 17 rows affected (0.007 sec)
+Records: 17  Duplicates: 0  Warnings: 0
+
+MariaDB [elitevideo]> select * from video;
++---------+------------+-----------+
+| vid_num | vid_indate | movie_num |
++---------+------------+-----------+
+|   34341 | 22-JAN-14  |      1235 |
+|   34342 | 22-JAN-14  |      1235 |
+|   34366 | 02-MAR-16  |      1236 |
+|   34367 | 02-MAR-16  |      1236 |
+|   34368 | 02-MAR-16  |      1236 |
+|   34369 | 02-MAR-16  |      1236 |
+|   44392 | 21-OCT-15  |      1237 |
+|   44397 | 21-OCT-15  |      1237 |
+|   54321 | 18-JUN-15  |      1234 |
+|   54324 | 18-JUN-15  |      1234 |
+|   54325 | 18-JUN-15  |      1234 |
+|   59237 | 14-FEB-16  |      1237 |
+|   61353 | 28-JAN-13  |      1245 |
+|   61354 | 28-JAN-13  |      1245 |
+|   61367 | 30-JUL-15  |      1246 |
+|   61369 | 30-JUL-15  |      1246 |
+|   61388 | 25-JAN-14  |      1239 |
++---------+------------+-----------+
+17 rows in set (0.001 sec)
+
+MariaDB [elitevideo]>  insert into detailrental values(1001, 34342, 2.0, '2016-MAR-04', '2016-MAR-02', NULL),(1001, 61353, 2.0, '2016-MAR-04', '2016-MAR-03', 1),(1002, 59237, 3.5, '2016-MAR-04', '2016-MAR-04', 3),(1003, 54325, 3.5, '2016-MAR-04', '2016-MAR-09', 3),(1003, 61369, 2.0, '2016-MAR-06', '2016-MAR-09', 1),(1003, 61388, 0.0, '2016-MAR-06', '2016-MAR-09', 1),(1004, 44392, 3.5, '2016-MAR-05', '2016-MAR-07', 3),(1004, 34367, 3.5, '2016-MAR-05', '2016-MAR-07', 3),(1004, 34341, 2.0, '2016-MAR-07', '2016-MAR-07', 1),(1005, 34342, 2.0, '2016-MAR-07', '2016-MAR-05', 1),(1005, 44397, 3.5, '2016-MAR-05', '2016-MAR-05', 3),(1006, 34366, 3.5, '2016-MAR-05', '2016-MAR-04', 3),(1006, 61367, 2.0, '2016-MAR-07', NULL, 1),(1007, 34368, 3.5, '2016-MAR-05', NULL, 3),(1008, 34369, 3.5, '2016-MAR-05', '2016-MAR-05', 3),(1009, 54324, 3.5, '2016-MAR-05', NULL, 3),(1001, 34366, 3.5, '2016-MAR-04', '2016-MAR-02', 3);
+Query OK, 17 rows affected (0.003 sec)
+Records: 17  Duplicates: 0  Warnings: 0
+
+MariaDB [elitevideo]> select * from detailrental;
++----------+---------+------------+----------------+-------------------+---------------------+
+| rent_num | vid_num | detail_fee | detail_duedate | detail_returndate | detail_dailylatefee |
++----------+---------+------------+----------------+-------------------+---------------------+
+|     1001 |   34342 |        2.0 | 2016-MAR-04    | 2016-MAR-02       |                NULL |
+|     1001 |   34366 |        3.5 | 2016-MAR-04    | 2016-MAR-02       |                   3 |
+|     1001 |   61353 |        2.0 | 2016-MAR-04    | 2016-MAR-03       |                   1 |
+|     1002 |   59237 |        3.5 | 2016-MAR-04    | 2016-MAR-04       |                   3 |
+|     1003 |   54325 |        3.5 | 2016-MAR-04    | 2016-MAR-09       |                   3 |
+|     1003 |   61369 |        2.0 | 2016-MAR-06    | 2016-MAR-09       |                   1 |
+|     1003 |   61388 |        0.0 | 2016-MAR-06    | 2016-MAR-09       |                   1 |
+|     1004 |   34341 |        2.0 | 2016-MAR-07    | 2016-MAR-07       |                   1 |
+|     1004 |   34367 |        3.5 | 2016-MAR-05    | 2016-MAR-07       |                   3 |
+|     1004 |   44392 |        3.5 | 2016-MAR-05    | 2016-MAR-07       |                   3 |
+|     1005 |   34342 |        2.0 | 2016-MAR-07    | 2016-MAR-05       |                   1 |
+|     1005 |   44397 |        3.5 | 2016-MAR-05    | 2016-MAR-05       |                   3 |
+|     1006 |   34366 |        3.5 | 2016-MAR-05    | 2016-MAR-04       |                   3 |
+|     1006 |   61367 |        2.0 | 2016-MAR-07    | NULL              |                   1 |
+|     1007 |   34368 |        3.5 | 2016-MAR-05    | NULL              |                   3 |
+|     1008 |   34369 |        3.5 | 2016-MAR-05    | 2016-MAR-05       |                   3 |
+|     1009 |   54324 |        3.5 | 2016-MAR-05    | NULL              |                   3 |
++----------+---------+------------+----------------+-------------------+---------------------+
+17 rows in set (0.001 sec)
+
+Question 3
+
+
+MariaDB [elitevideo]> select movie_num,movie_year from movie where movie_num=1245;
++-----------+------------+
+| movie_num | movie_year |
++-----------+------------+
+|      1245 |       2012 |
++-----------+------------+
+1 row in set (0.006 sec)
+
+MariaDB [elitevideo]> update movie set movie_year = 2010 where movie_num = 1245;
+Query OK, 1 row affected (0.005 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [elitevideo]>  select movie_num,movie_year from movie where movie_num=1245;
++-----------+------------+
+| movie_num | movie_year |
++-----------+------------+
+|      1245 |       2010 |
++-----------+------------+
+1 row in set (0.001 sec)
+
+Question 4
+
+MariaDB [elitevideo]> select price_code, movie_genre from movie;
++------------+-------------+
+| price_code | movie_genre |
++------------+-------------+
+|          2 | FAMILY      |
+|          1 | ACTION      |
+|          2 | DRAMA       |
+|          2 | COMEDY      |
+|       NULL | DRAMA       |
+|          3 | DRAMA       |
+|          1 | ACTION      |
+|          1 | COMEDY      |
++------------+-------------+
+8 rows in set (0.002 sec)
+
+MariaDB [elitevideo]> update movie set price_code = 3 where movie_genre='ACTION';
+Query OK, 2 rows affected (0.006 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+MariaDB [elitevideo]>  select price_code, movie_genre from movie;
++------------+-------------+
+| price_code | movie_genre |
++------------+-------------+
+|          2 | FAMILY      |
+|          3 | ACTION      |
+|          2 | DRAMA       |
+|          2 | COMEDY      |
+|       NULL | DRAMA       |
+|          3 | DRAMA       |
+|          3 | ACTION      |
+|          1 | COMEDY      |
++------------+-------------+
+8 rows in set (0.000 sec)
+
+Question 5
+
+
+MariaDB [elitevideo]> select price_rentfee from price;
++---------------+
+| price_rentfee |
++---------------+
+|           2.0 |
+|           3.5 |
+|           1.5 |
+|           1.0 |
++---------------+
+4 rows in set (0.001 sec)
+
+MariaDB [elitevideo]> update price set price_rentfee = price_rentfee+0.50;
+Query OK, 4 rows affected (0.006 sec)
+Rows matched: 4  Changed: 4  Warnings: 0
+
+MariaDB [elitevideo]> select price_rentfee from price;
++---------------+
+| price_rentfee |
++---------------+
+|           2.5 |
+|           4.0 |
+|           2.0 |
+|           1.5 |
++---------------+
+4 rows in set (0.001 sec)
+
+Question 6
+
+MariaDB [elitevideo]> select movie_title,movie_year,movie_genre from movie;
++----------------------------+------------+-------------+
+| movie_title                | movie_year | movie_genre |
++----------------------------+------------+-------------+
+| The Cesar Family Christmas |       2014 | FAMILY      |
+| Smokey Mountain Wildlife   |       2011 | ACTION      |
+| Richard Goodhope           |       2015 | DRAMA       |
+| Beatnik Fever              |       2014 | COMEDY      |
+| Constant Companion         |       2015 | DRAMA       |
+| Where Hope Dies            |       2005 | DRAMA       |
+| Time to Burn               |       2010 | ACTION      |
+| What He Doesn't Know       |       2013 | COMEDY      |
++----------------------------+------------+-------------+
+8 rows in set (0.001 sec)
+
+Question 7
+
+MariaDB [elitevideo]> select movie_year,movie_title,movie_cost from movie order by movie_year desc;
++------------+----------------------------+------------+
+| movie_year | movie_title                | movie_cost |
++------------+----------------------------+------------+
+|       2015 | Richard Goodhope           |      59.95 |
+|       2015 | Constant Companion         |      89.95 |
+|       2014 | The Cesar Family Christmas |      39.95 |
+|       2014 | Beatnik Fever              |      29.95 |
+|       2013 | What He Doesn't Know       |      58.29 |
+|       2011 | Smokey Mountain Wildlife   |      59.95 |
+|       2010 | Time to Burn               |      45.49 |
+|       2005 | Where Hope Dies            |      25.49 |
++------------+----------------------------+------------+
+8 rows in set (0.002 sec)
+
+Question 8
+
+MariaDB [elitevideo]> select movie_title, movie_year, movie_genre from movie order by movie_genre asc, movie_year desc;
++----------------------------+------------+-------------+
+| movie_title                | movie_year | movie_genre |
++----------------------------+------------+-------------+
+| Smokey Mountain Wildlife   |       2011 | ACTION      |
+| Time to Burn               |       2010 | ACTION      |
+| Beatnik Fever              |       2014 | COMEDY      |
+| What He Doesn't Know       |       2013 | COMEDY      |
+| Richard Goodhope           |       2015 | DRAMA       |
+| Constant Companion         |       2015 | DRAMA       |
+| Where Hope Dies            |       2005 | DRAMA       |
+| The Cesar Family Christmas |       2014 | FAMILY      |
++----------------------------+------------+-------------+
+8 rows in set (0.005 sec)
+
+Question 9
+
+MariaDB [elitevideo]> select movie_num,movie_title, price_code from movie where movie_title like 'r%';
++-----------+------------------+------------+
+| movie_num | movie_title      | price_code |
++-----------+------------------+------------+
+|      1236 | Richard Goodhope |          2 |
++-----------+------------------+------------+
+1 row in set (0.005 sec)
+
+Question 10
+
+MariaDB [elitevideo]> select movie_title, movie_year, movie_cost from movie where movie_title like '%hope%' order by movie_title asc;
++------------------+------------+------------+
+| movie_title      | movie_year | movie_cost |
++------------------+------------+------------+
+| Richard Goodhope |       2015 |      59.95 |
+| Where Hope Dies  |       2005 |      25.49 |
++------------------+------------+------------+
+2 rows in set (0.001 sec)
+
+Question 11
+
+MariaDB [elitevideo]> select movie_title, movie_year, movie_genre from movie where movie_genre = 'action';
++--------------------------+------------+-------------+
+| movie_title              | movie_year | movie_genre |
++--------------------------+------------+-------------+
+| Smokey Mountain Wildlife |       2011 | ACTION      |
+| Time to Burn             |       2010 | ACTION      |
++--------------------------+------------+-------------+
+2 rows in set (0.001 sec)
+
+Question 12
+
+MariaDB [elitevideo]> select movie_num, movie_title, movie_cost from movie where movie_cost > 40;
++-----------+--------------------------+------------+
+| movie_num | movie_title              | movie_cost |
++-----------+--------------------------+------------+
+|      1235 | Smokey Mountain Wildlife |      59.95 |
+|      1236 | Richard Goodhope         |      59.95 |
+|      1238 | Constant Companion       |      89.95 |
+|      1245 | Time to Burn             |      45.49 |
+|      1246 | What He Doesn't Know     |      58.29 |
++-----------+--------------------------+------------+
+5 rows in set (0.005 sec)
+
+Question 13
+
+MariaDB [elitevideo]> select movie_num, movie_title, movie_cost, movie_genre from movie where movie_genre in ('action', 'comedy') and movie_cost < 50 order by movie_genre asc;
++-----------+---------------+------------+-------------+
+| movie_num | movie_title   | movie_cost | movie_genre |
++-----------+---------------+------------+-------------+
+|      1245 | Time to Burn  |      45.49 | ACTION      |
+|      1237 | Beatnik Fever |      29.95 | COMEDY      |
++-----------+---------------+------------+-------------+
+2 rows in set (0.006 sec)
+
+Question 14
+
+MariaDB [elitevideo]> select mem_num, mem_fname, mem_lname, mem_street, mem_state, mem_balance from membership where mem_state = 'TN'and mem_balance < 5 and mem_street like '%Avenue';
++---------+-----------+-----------+-----------------------+-----------+-------------+
+| mem_num | mem_fname | mem_lname | mem_street            | mem_state | mem_balance |
++---------+-----------+-----------+-----------------------+-----------+-------------+
+|     104 | Jamal     | Melendez  | 788 East 145th Avenue | TN        |           0 |
+|     112 | Luis      | Trujillo  | 7267 Melvin Avenue    | TN        |           3 |
++---------+-----------+-----------+-----------------------+-----------+-------------+
+2 rows in set (0.002 sec)
+
+Question 15
+
+MariaDB [elitevideo]> select movie_genre, count(*) as Number_of_Movies from movie group by movie_genre;
++-------------+------------------+
+| movie_genre | Number_of_Movies |
++-------------+------------------+
+| ACTION      |                2 |
+| COMEDY      |                2 |
+| DRAMA       |                3 |
+| FAMILY      |                1 |
++-------------+------------------+
+4 rows in set (0.006 sec)
+
+Question 16
+
+MariaDB [elitevideo]> select avg(movie_cost) as Average_Movie_Cost from movie;
++--------------------+
+| Average_Movie_Cost |
++--------------------+
+|          51.127500 |
++--------------------+
+1 row in set (0.001 sec)
+
+Question 17
+
+MariaDB [elitevideo]> select movie_genre, avg(movie_cost) from movie group by movie_genre;
++-------------+-----------------+
+| movie_genre | avg(movie_cost) |
++-------------+-----------------+
+| ACTION      |       52.720000 |
+| COMEDY      |       44.120000 |
+| DRAMA       |       58.463333 |
+| FAMILY      |       39.950000 |
++-------------+-----------------+
+4 rows in set (0.002 sec)
+
+Question 18
+
+MariaDB [elitevideo]> select movie_title,movie_genre,price_description,price_rentfee from movie,price where movie.price_code = price.price_code;
++----------------------------+-------------+-------------------+---------------+
+| movie_title                | movie_genre | price_description | price_rentfee |
++----------------------------+-------------+-------------------+---------------+
+| The Cesar Family Christmas | FAMILY      | New Release       |           4.0 |
+| Smokey Mountain Wildlife   | ACTION      | Discount          |           2.0 |
+| Richard Goodhope           | DRAMA       | New Release       |           4.0 |
+| Beatnik Fever              | COMEDY      | New Release       |           4.0 |
+| Where Hope Dies            | DRAMA       | Discount          |           2.0 |
+| Time to Burn               | ACTION      | Discount          |           2.0 |
+| What He Doesn't Know       | COMEDY      | Standard          |           2.5 |
++----------------------------+-------------+-------------------+---------------+
+7 rows in set (0.001 sec)
+
+Question 19
+
+MariaDB [elitevideo]> select movie_genre, avg(price_rentfee) as Average_Rental_Fee from movie,price where movie.price_code = price.price_code group by movie_genre;
++-------------+--------------------+
+| movie_genre | Average_Rental_Fee |
++-------------+--------------------+
+| ACTION      |            2.00000 |
+| COMEDY      |            3.25000 |
+| DRAMA       |            3.00000 |
+| FAMILY      |            4.00000 |
++-------------+--------------------+
+4 rows in set (0.002 sec)
+
+Question 20
+
+MariaDB [elitevideo]> select movie_title, (movie_cost/price_rentfee) as Breakeven_Rentals from movie, price where movie.price_code = price.price_code;
++----------------------------+-------------------+
+| movie_title                | Breakeven_Rentals |
++----------------------------+-------------------+
+| The Cesar Family Christmas |          9.987500 |
+| Smokey Mountain Wildlife   |         29.975000 |
+| Richard Goodhope           |         14.987500 |
+| Beatnik Fever              |          7.487500 |
+| Where Hope Dies            |         12.745000 |
+| Time to Burn               |         22.745000 |
+| What He Doesn't Know       |         23.316000 |
++----------------------------+-------------------+
+7 rows in set (0.002 sec)
+
+Question 21
+
+MariaDB [elitevideo]> select movie_title, movie_year from movie,price where movie.price_code = price.price_code;
++----------------------------+------------+
+| movie_title                | movie_year |
++----------------------------+------------+
+| The Cesar Family Christmas |       2014 |
+| Smokey Mountain Wildlife   |       2011 |
+| Richard Goodhope           |       2015 |
+| Beatnik Fever              |       2014 |
+| Where Hope Dies            |       2005 |
+| Time to Burn               |       2010 |
+| What He Doesn't Know       |       2013 |
++----------------------------+------------+
+7 rows in set (0.001 sec)
+
+Question 22
+
+MariaDB [elitevideo]> select movie_title, movie_genre, movie_cost from movie where movie_cost > 44.99 and movie_cost < 49.99;
++--------------+-------------+------------+
+| movie_title  | movie_genre | movie_cost |
++--------------+-------------+------------+
+| Time to Burn | ACTION      |      45.49 |
++--------------+-------------+------------+
+1 row in set (0.002 sec)
+
+Question 23
+
+MariaDB [elitevideo]> select movie_title, price_description, price_rentfee from movie, price where movie.price_code = price.price_code and movie_genre in ('Family','Comedy','Drama');
++----------------------------+-------------------+---------------+
+| movie_title                | price_description | price_rentfee |
++----------------------------+-------------------+---------------+
+| The Cesar Family Christmas | New Release       |           4.0 |
+| Richard Goodhope           | New Release       |           4.0 |
+| Beatnik Fever              | New Release       |           4.0 |
+| Where Hope Dies            | Discount          |           2.0 |
+| What He Doesn't Know       | Standard          |           2.5 |
++----------------------------+-------------------+---------------+
+5 rows in set (0.002 sec)
+
+Question 24
+
+MariaDB [elitevideo]> select membership.mem_num,mem_fname,mem_lname,mem_balance from membership,rental where membership.mem_num= rental.mem_num;
++---------+-----------+-----------+-------------+
+| mem_num | mem_fname | mem_lname | mem_balance |
++---------+-----------+-----------+-------------+
+|     102 | Tami      | Dawson    |          11 |
+|     103 | Curt      | Knight    |           6 |
+|     104 | Jamal     | Melendez  |           0 |
+|     105 | Iva       | Mcclain   |          15 | |
+|     107 | Rosario   | Elliott   |           5 |
+|     110 | Lewis     | Rosales   |           0 |
+|     111 | Stacy     | Mann      |           8 | |
++---------+-----------+-----------+-------------+
+9 rows in set (0.003 sec)
+
+Question 25
+
+MariaDB [elitevideo]> select min(mem_balance) as Minimum_Balance, max(mem_balance) as Maximum_Balance, avg(mem_balance) as Average_Balance from membership where mem_num in (select mem_num from rental);
++-----------------+-----------------+-----------------+
+| Minimum_Balance | Maximum_Balance | Average_Balance |
++-----------------+-----------------+-----------------+
+|               0 |              15 |          6.4286 |
++-----------------+-----------------+-----------------+
+1 row in set (0.027 sec)
+
+Question 26
+
+MariaDB [elitevideo]> select r.rent_num, r.rent_date,v.vid_num,m.movie_title,d.detail_duedate,d.detail_returndate from rental r join detailrental d on r.rent_num = d.rent_num join video v on d.vid_num = v.vid_num join movie m on v.movie_num = m.movie_num where d.detail_returndate > d.detail_duedate order by r.rent_num,m.movie_title;
++----------+-----------+---------+----------------------------+----------------+-------------------+
+| rent_num | rent_date | vid_num | movie_title                | detail_duedate | detail_returndate |
++----------+-----------+---------+----------------------------+----------------+-------------------+
+|     1003 | 02-MAR-16 |   54325 | The Cesar Family Christmas | 2016-MAR-04    | 2016-MAR-09       |
+|     1003 | 02-MAR-16 |   61369 | What He Doesn't Know       | 2016-MAR-06    | 2016-MAR-09       |
+|     1003 | 02-MAR-16 |   61388 | Where Hope Dies            | 2016-MAR-06    | 2016-MAR-09       |
+|     1004 | 02-MAR-16 |   44392 | Beatnik Fever              | 2016-MAR-05    | 2016-MAR-07       |
+|     1004 | 02-MAR-16 |   34367 | Richard Goodhope           | 2016-MAR-05    | 2016-MAR-07       |
++----------+-----------+---------+----------------------------+----------------+-------------------+
+5 rows in set (0.002 sec)
+
+Question 27
+
+MariaDB [elitevideo]> select r.rent_num, r.rent_date,m.movie_title,d.detail_fee from rental r join detailrental d on r.rent_num = d.rent_num join video v on d.vid_num = v.vid_num join movie m on v.movie_num = m.movie_num where d.detail_returndate <= d.detail_duedate;
++----------+-----------+--------------------------+------------+
+| rent_num | rent_date | movie_title              | detail_fee |
++----------+-----------+--------------------------+------------+
+|     1001 | 01-MAR-16 | Smokey Mountain Wildlife |        2.0 |
+|     1001 | 01-MAR-16 | Richard Goodhope         |        3.5 |
+|     1001 | 01-MAR-16 | Time to Burn             |        2.0 |
+|     1002 | 01-MAR-16 | Beatnik Fever            |        3.5 |
+|     1004 | 02-MAR-16 | Smokey Mountain Wildlife |        2.0 |
+|     1005 | 02-MAR-16 | Smokey Mountain Wildlife |        2.0 |
+|     1005 | 02-MAR-16 | Beatnik Fever            |        3.5 |
+|     1006 | 02-MAR-16 | Richard Goodhope         |        3.5 |
+|     1008 | 03-MAR-16 | Richard Goodhope         |        3.5 |
++----------+-----------+--------------------------+------------+
+9 rows in set (0.001 sec)
+
+Question 28
+
+MariaDB [elitevideo]> select m.movie_num, m.movie_genre, g.avg_cost as Average_Cost, m.movie_cost,((m.movie_cost - g.avg_cost)/g.avg_cost * 100) as Percentage_Difference from movie m join (select movie_genre, avg(movie_cost) as avg_cost from movie group by movie_genre) g on m.movie_genre = g.movie_genre order by m.movie_num;
++-----------+-------------+--------------+------------+-----------------------+
+| movie_num | movie_genre | Average_Cost | movie_cost | Percentage_Difference |
++-----------+-------------+--------------+------------+-----------------------+
+|      1234 | FAMILY      |    39.950000 |      39.95 |          0.0000000000 |
+|      1235 | ACTION      |    52.720000 |      59.95 |         13.7139605463 |
+|      1236 | DRAMA       |    58.463333 |      59.95 |          2.5429049692 |
+|      1237 | COMEDY      |    44.120000 |      29.95 |        -32.1169537625 |
+|      1238 | DRAMA       |    58.463333 |      89.95 |         53.8571192990 |
+|      1239 | DRAMA       |    58.463333 |      25.49 |        -56.4000225577 |
+|      1245 | ACTION      |    52.720000 |      45.49 |        -13.7139605463 |
+|      1246 | COMEDY      |    44.120000 |      58.29 |         32.1169537625 |
++-----------+-------------+--------------+------------+-----------------------+
+8 rows in set (0.029 sec)
+
+
+
