@@ -1,0 +1,321 @@
+Fida Ukwishaka
+47582028
+COHORT C
+
+
+Question 1 (a,b,c)
+
+MariaDB [(none)]> create database case2;
+Query OK, 1 row affected (0.016 sec)
+
+MariaDB [(none)]> use case2;
+Database changed
+
+MariaDB [case2]> create table employee (empNo varchar(5) not null primary key,fName varchar(30) not null,lName varchar(30) not null,address varchar(100) not null,dob date not null,sex char(1) not null check (sex in ('M', 'F')),position varchar(30) not null check (position in ('Manager','Team Leader','Analyst','Software Developer')),deptNo int not null);
+Query OK, 0 rows affected (0.036 sec)
+
+MariaDB [case2]> alter table employee add constraint fk_employee_department foreign key (deptNo) references department(deptNo)on delete cascade on update cascade;
+Query OK, 0 rows affected (0.058 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [case2]> describe employee;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| empNo    | varchar(5)   | NO   | PRI | NULL    |       |
+| fName    | varchar(30)  | NO   |     | NULL    |       |
+| lName    | varchar(30)  | NO   |     | NULL    |       |
+| address  | varchar(100) | NO   |     | NULL    |       |
+| dob      | date         | NO   |     | NULL    |       |
+| sex      | char(1)      | NO   |     | NULL    |       |
+| position | varchar(30)  | NO   |     | NULL    |       |
+| deptNo   | int(11)      | YES  | MUL | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+8 rows in set (0.086 sec)
+
+MariaDB [case2]> insert into employee values('E1', 'Alice', 'Mensah', 'Accra', '1990-05-12', 'F', 'Manager', null),('E2', 'John', 'Owusu', 'Kumasi', '1988-09-21', 'M', 'Team Leader', null),('E3', 'Grace', 'Boateng', 'Takoradi', '1992-03-14', 'F', 'Analyst', null),('E4', 'David', 'Asare', 'Cape Coast', '1991-11-30', 'M', 'Software Developer', null),('E5', 'Linda', 'Osei', 'Tamale', '1989-07-18', 'F', 'Manager', null),('E6', 'Michael', 'Kusi', 'Sunyani', '1993-04-10', 'M', 'Analyst', null),('E7', 'Sarah', 'Addo', 'Ho', '1995-06-22', 'F', 'Software Developer', null),('E8', 'Peter', 'Amoah', 'Koforidua', '1990-02-15', 'M', 'Team Leader', null),('E9', 'Ruth', 'Darko', 'Bolgatanga', '1994-08-08', 'F', 'Software Developer', null), ('E10', 'James', 'Antwi', 'Wa', '1992-12-01', 'M', 'Analyst', null);
+Query OK, 10 rows affected (0.038 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+MariaDB [case2]> select * from employee;
++-------+---------+---------+------------+------------+-----+--------------------+--------+
+| empNo | fName   | lName   | address    | dob        | sex | position           | deptNo |
++-------+---------+---------+------------+------------+-----+--------------------+--------+
+| E1    | Alice   | Mensah  | Accra      | 1990-05-12 | F   | Manager            |    null|
+| E10   | James   | Antwi   | Wa         | 1992-12-01 | M   | Analyst            |    null|
+| E2    | John    | Owusu   | Kumasi     | 1988-09-21 | M   | Team Leader        |    null|
+| E3    | Grace   | Boateng | Takoradi   | 1992-03-14 | F   | Analyst            |    null|
+| E4    | David   | Asare   | Cape Coast | 1991-11-30 | M   | Software Developer |    null|
+| E5    | Linda   | Osei    | Tamale     | 1989-07-18 | F   | Manager            |    null|
+| E6    | Michael | Kusi    | Sunyani    | 1993-04-10 | M   | Analyst            |    null|
+| E7    | Sarah   | Addo    | Ho         | 1995-06-22 | F   | Software Developer |    null|
+| E8    | Peter   | Amoah   | Koforidua  | 1990-02-15 | M   | Team Leader        |    null|
+| E9    | Ruth    | Darko   | Bolgatanga | 1994-08-08 | F   | Software Developer |    null|
++-------+---------+---------+------------+------------+-----+--------------------+--------+
+10 rows in set (0.001 sec)
+
+
+MariaDB [case2]> update employee set deptNo = 1 where empNo in ('E1', 'E4');
+Query OK, 2 rows affected (0.038 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+MariaDB [case2]> update employee set deptNo = 2 where empNo in ('E6');
+Query OK, 1 rows affected (0.026 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [case2]> update employee set deptNo = 3 where empNo in ('E2', 'E7');
+Query OK, 1 rows affected (0.026 sec)
+
+MariaDB [case2]> update employee set deptNo = 5 where empNo in ('E10');
+Query OK, 1 rows affected (0.027 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [case2]>  update employee set deptNo = 6 where empNo in ('E3', 'E9');
+Query OK, 2 rows affected (0.004 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+MariaDB [case2]>  update employee set deptNo = 6 where empNo in ('E5');
+Query OK, 1 row affected (0.030 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [case2]>  update employee set deptNo = 7 where empNo in ('E8');
+Query OK, 1 row affected (0.027 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [case2]> select * from employee;
++-------+---------+---------+------------+------------+-----+--------------------+--------+
+| empNo | fName   | lName   | address    | dob        | sex | position           | deptNo |
++-------+---------+---------+------------+------------+-----+--------------------+--------+
+| E1    | Alice   | Mensah  | Accra      | 1990-05-12 | F   | Manager            |      1 |
+| E10   | James   | Antwi   | Wa         | 1992-12-01 | M   | Analyst            |      5 |
+| E2    | John    | Owusu   | Kumasi     | 1988-09-21 | M   | Team Leader        |      3 |
+| E3    | Grace   | Boateng | Takoradi   | 1992-03-14 | F   | Analyst            |      6 |
+| E4    | David   | Asare   | Cape Coast | 1991-11-30 | M   | Software Developer |      1 |
+| E5    | Linda   | Osei    | Tamale     | 1989-07-18 | F   | Manager            |      6 |
+| E6    | Michael | Kusi    | Sunyani    | 1993-04-10 | M   | Analyst            |      2 |
+| E7    | Sarah   | Addo    | Ho         | 1995-06-22 | F   | Software Developer |      3 |
+| E8    | Peter   | Amoah   | Koforidua  | 1990-02-15 | M   | Team Leader        |      7 |
+| E9    | Ruth    | Darko   | Bolgatanga | 1994-08-08 | F   | Software Developer |      6 |
++-------+---------+---------+------------+------------+-----+--------------------+--------+
+10 rows in set (0.001 sec)
+
+
+MariaDB [case2]> create table department (deptNo int not null primary key,deptName varchar(50) not null,mgrEmpNo varchar(5) not null unique,foreign key (mgrEmpNo) references employee(empNo) on delete cascade on update cascade);
+Query OK, 0 rows affected (0.037 sec)
+
+MariaDB [case2]> describe department;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| deptNo   | int(11)     | NO   | PRI | NULL    |       |
+| deptName | varchar(50) | NO   |     | NULL    |       |
+| mgrEmpNo | varchar(5)  | NO   | UNI | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+3 rows in set (0.054 sec)
+
+MariaDB [case2]> insert into department values (1, 'Human Resource', 'E1'),(2, 'Finance', 'E5'),(3, 'IT', 'E2'),(5, 'Operations', 'E8'),(6, 'Research', 'E4'),(7, 'Sales', 'E6'),(8, 'Quality Assurance', 'E10');
+Query OK, 7 rows affected (0.003 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+MariaDB [case2]> select * from department;
++--------+-------------------+----------+
+| deptNo | deptName          | mgrEmpNo |
++--------+-------------------+----------+
+|      1 | Human Resource    | E1       |
+|      2 | Finance           | E5       |
+|      3 | IT                | E2       |
+|      5 | Operations        | E8       |
+|      6 | Research          | E4       |
+|      7 | Sales             | E6       |
+|      8 | Quality Assurance | E10      |
++--------+-------------------+----------+
+7 rows in set (0.001 sec)
+
+
+MariaDB [case2]> create table project (projNo varchar(5) not null primary key,projName varchar(50) not null,deptNo int not null,foreign key (deptNo) references department(deptNo) on delete cascade on update cascade);
+Query OK, 0 rows affected (0.034 sec)
+
+MariaDB [case2]> describe project;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| projNo   | varchar(5)  | NO   | PRI | NULL    |       |
+| projName | varchar(50) | NO   |     | NULL    |       |
+| deptNo   | int(11)     | NO   | MUL | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+3 rows in set (0.053 sec)
+
+MariaDB [case2]> insert into project values ('P1', 'Payroll System', 2),('P2', 'Recruitment Portal', 6),('P3', 'Inventory System', 5),('P4', 'Website Redesign', 7),('P5', 'Marketing Campaign', 8),('P6', 'Mobile App', 3),('P7', 'Data Analytics', 2),('P8', 'Customer Portal', 5),('P9', 'Cyber Security', 3),('P10', 'Performance Review', 1);
+Query OK, 10 rows affected (0.026 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+
+MariaDB [case2]> select * from project;
++--------+--------------------+--------+
+| projNo | projName           | deptNo |
++--------+--------------------+--------+
+| P1     | Payroll System     |      2 |
+| P10    | Performance Review |      1 |
+| P2     | Recruitment Portal |      6 |
+| P3     | Inventory System   |      5 |
+| P4     | Website Redesign   |      7 |
+| P5     | Marketing Campaign |      8 |
+| P6     | Mobile App         |      3 |
+| P7     | Data Analytics     |      2 |
+| P8     | Customer Portal    |      5 |
+| P9     | Cyber Security     |      3 |
++--------+--------------------+--------+
+10 rows in set (0.001 sec)
+
+
+MariaDB [case2]> create table workson (empNo varchar(5) not null,projNo varchar(5) not null,dateWorked date not null,hoursWorked int not null check (hoursWorked between 0 and 40),primary key (empNo, projNo, dateWorked),foreign key (empNo) references employee(empNo) on delete cascade on update cascade,foreign key (projNo) references project(projNo) on delete cascade on update cascade);
+Query OK, 0 rows affected (0.036 sec)
+
+MariaDB [case2]> describe workson;
++-------------+------------+------+-----+---------+-------+
+| Field       | Type       | Null | Key | Default | Extra |
++-------------+------------+------+-----+---------+-------+
+| empNo       | varchar(5) | NO   | PRI | NULL    |       |
+| projNo      | varchar(5) | NO   | PRI | NULL    |       |
+| dateWorked  | date       | NO   | PRI | NULL    |       |
+| hoursWorked | int(11)    | NO   |     | NULL    |       |
++-------------+------------+------+-----+---------+-------+
+4 rows in set (0.061 sec)
+
+MariaDB [case2]> insert into workson values ('E1', 'P2', '2025-01-10', 8),('E2', 'P4', '2025-01-11', 7),('E3', 'P5', '2025-01-12', 6),('E4', 'P9', '2025-01-13', 8),('E5', 'P1', '2025-01-14', 5),('E6', 'P7', '2025-01-15', 7),('E7', 'P6', '2025-01-16', 8),('E8', 'P3', '2025-01-17', 6),('E9', 'P10', '2025-01-18', 1),('E10', 'P8', '2025-01-19', 8);
+Query OK, 10 rows affected (0.003 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+MariaDB [case2]> select * from workson;
++-------+--------+------------+-------------+
+| empNo | projNo | dateWorked | hoursWorked |
++-------+--------+------------+-------------+
+| E1    | P2     | 2025-01-10 |           8 |
+| E10   | P8     | 2025-01-19 |           8 |
+| E2    | P4     | 2025-01-11 |           7 |
+| E3    | P5     | 2025-01-12 |           6 |
+| E4    | P9     | 2025-01-13 |           8 |
+| E5    | P1     | 2025-01-14 |           5 |
+| E6    | P7     | 2025-01-15 |           7 |
+| E7    | P6     | 2025-01-16 |           8 |
+| E8    | P3     | 2025-01-17 |           6 |
+| E9    | P10    | 2025-01-18 |           1 |
++-------+--------+------------+-------------+
+10 rows in set (0.001 sec)
+
+Question 2
+
+MariaDB [case2]>  create view female_manager_projects as select p.projNo, p.projName,d.deptNo,d.deptName, e.empNo as managerNo,e.fName,e.lName from project p, department d, employee e where p.deptNo = d.deptNo and d.mgrEmpNo = e.empNo and e.sex = 'F' order by p.projNo;
+Query OK, 0 rows affected (0.010 sec)
+
+MariaDB [case2]> select * from female_manager_projects;
++--------+--------------------+--------+----------------+-----------+-------+--------+
+| projNo | projName           | deptNo | deptName       | managerNo | fName | lName  |
++--------+--------------------+--------+----------------+-----------+-------+--------+
+| P1     | Payroll System     |      2 | Finance        | E5        | Linda | Osei   |
+| P10    | Performance Review |      1 | Human Resource | E1        | Alice | Mensah |
+| P7     | Data Analytics     |      2 | Finance        | E5        | Linda | Osei   |
++--------+--------------------+--------+----------------+-----------+-------+--------+
+3 rows in set (0.029 sec)
+
+Question 3
+
+MariaDB [case2]> create view employee_project_hours as select e.empNo,e.fName,e.lName,p.projName,w.hoursWorked from employee e, project p, workson w where e.empNo = w.empNo and p.projNo = w.projNo;
+Query OK, 0 rows affected (0.035 sec)
+
+MariaDB [case2]> select * from employee_project_hours;
++-------+---------+---------+--------------------+-------------+
+| empNo | fName   | lName   | projName           | hoursWorked |
++-------+---------+---------+--------------------+-------------+
+| E1    | Alice   | Mensah  | Recruitment Portal |           8 |
+| E10   | James   | Antwi   | Customer Portal    |           8 |
+| E2    | John    | Owusu   | Website Redesign   |           7 |
+| E3    | Grace   | Boateng | Marketing Campaign |           6 |
+| E4    | David   | Asare   | Cyber Security     |           8 |
+| E5    | Linda   | Osei    | Payroll System     |           5 |
+| E6    | Michael | Kusi    | Data Analytics     |           7 |
+| E7    | Sarah   | Addo    | Mobile App         |           8 |
+| E8    | Peter   | Amoah   | Inventory System   |           6 |
+| E9    | Ruth    | Darko   | Performance Review |           1 |
++-------+---------+---------+--------------------+-------------+
+10 rows in set (0.029 sec)
+
+Question 4
+
+MariaDB [case2]> create view EmpProject(empNo, projNo,totalHours) as select w.empNo,w.projNo, sum(hoursWorked) from employee e, project p, workson w where e.empNo = w.empNo and p.projNo = w.projNo group by w.empNo, w.projNo;
+Query OK, 0 rows affected (0.032 sec)
+
+A.
+Displays every row and all three columns (empNo, projNo, totalHours) from the view.
+MariaDB [case2]> select * from EmpProject;
++-------+--------+------------+
+| empNo | projNo | totalHours |
++-------+--------+------------+
+| E1    | P2     |          8 |
+| E10   | P8     |          8 |
+| E2    | P4     |          7 |
+| E3    | P5     |          6 |
+| E4    | P9     |          8 |
+| E5    | P1     |          5 |
+| E6    | P7     |          7 |
+| E7    | P6     |          8 |
+| E8    | P3     |          6 |
+| E9    | P10    |          1 |
++-------+--------+------------+
+10 rows in set (0.033 sec)
+
+B.
+projNo are not the format like SCCS so no record will be found
+MariaDB [case2]> select projNo from EmpProject where projNo = 'SCCS';
+Empty set (0.028 sec)
+
+C.
+MariaDB [case2]> select count(projNo) from empProject where empNo = 'E1';
++---------------+
+| count(projNo) |
++---------------+
+|             1 |
++---------------+
+1 row in set (0.029 sec)
+
+D.
+MariaDB [case2]> select empNo, totalHours from EmpProject group by empNo;
++-------+------------+
+| empNo | totalHours |
++-------+------------+
+| E1    |          8 |
+| E10   |          8 |
+| E2    |          7 |
+| E3    |          6 |
+| E4    |          8 |
+| E5    |          5 |
+| E6    |          7 |
+| E7    |          8 |
+| E8    |          6 |
+| E9    |          1 |
++-------+------------+
+10 rows in set (0.027 sec)
+The query executed successfully because each employee appears only once in the EmpProject view. Therefore, each empNo has a single corresponding totalHours value, making the result unambiguous. If an employee had multiple projects, this query would be ambiguous and, depending on the SQL mode, could produce an error. to avoid the error, you need to aggregate totalHours since you're grouping by empNo. For instance, select empNo, sum(totalHours) as totalHours
+from EmpProject group by empNo;
+
+Question 5
+
+The materialized view ExpensiveParts stores the distinct part numbers whose partCost is greater than 1000. Whenever the Part table is updated, the materialized view should also be updated to keep it consistent.
+
+Maintenance of the materialized view
+-Insert: If a new part is inserted with partCost > 1000, add its partNo to the materialized view if it is not already present.
+-Delete: If a part with partCost > 1000 is deleted, remove its partNo from the materialized view only if no other record for the same partNo has a cost   greater than 1000.
+-Update: If a part's partCost changes:
+         *If the cost changes from 1000 or less to greater than 1000, add the partNo to the materialized view.
+         *If the cost changes from greater than 1000 to 1000 or less, remove the partNo only if there are no other contracts where the same part still costs       more than 1000.
+
+Also, the view can be maintained without accessing the base table when:
+
+-A new record with partCost > 1000 is inserted and the partNo is not already in the view.
+-A record with partCost ≤ 1000 is inserted, since it does not affect the view.
+-A record is updated but remains on the same side of the condition (for example, from 1200 to 1500 or from 800 to 900).
+
+The base table must be accessed when deleting a record or reducing a cost below 1000 to determine whether another contract for the same partNo still satisfies the condition partCost > 1000. This is necessary because the view stores only distinct partNo values and does not indicate how many qualifying records exist for each part.
+
+
+
